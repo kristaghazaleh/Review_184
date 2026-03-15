@@ -1,17 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="CS 184 graphics theory reference page: sampling, antialiasing, transforms, textures, curves, meshes, ray tracing, radiometry, and Monte Carlo integration." />
-  <meta name="keywords" content="CS184, computer graphics, study guide, sampling, antialiasing, transforms, textures, Bezier, halfedge, ray tracing, Monte Carlo" />
-  <title>CS 184 — Graphics Theory Reference</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="CS 184 graphics theory reference page: sampling, antialiasing, transforms, textures, curves, meshes, ray tracing, radiometry, and Monte Carlo integration." name="description"/>
+<meta content="CS184, computer graphics, study guide, sampling, antialiasing, transforms, textures, Bezier, halfedge, ray tracing, Monte Carlo" name="keywords"/>
+<title>CS 184 — Graphics Theory Reference</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="styles.css" rel="stylesheet"/>
 </head>
-
 <script>
   window.MathJax = {
     tex: {
@@ -20,273 +20,398 @@
     }
   };
 </script>
-<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
-
+<script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 <body>
-  <header class="hero">
-    <div class="hero-inner">
-      <div class="course-line">CS 184 / Graphics Theory</div>
-      <h1 class="title">Graphics Theory Reference</h1>
-      <div class="byline">sampling, geometry, and rendering</div>
-      <div class="meta">
-        <div><span class="meta-label">Coverage:</span> sampling, antialiasing, transforms, texture mapping, curves, meshes, ray tracing, radiometry, Monte Carlo integration</div>
-        <div><span class="meta-label">Built from:</span> lecture slides, review material, HW1, HW2, and Spring 2020–2025 course questions</div>
-        <div><span class="meta-label">Focus:</span> core concepts, equations, reasoning patterns, and practical reminders</div>
-      </div>
-    </div>
-  </header>
-
-  <nav class="toc" aria-label="Table of contents">
-    <div class="toc-inner">
-      <div class="toc-title">Contents</div>
-      <a href="#HowToUse">Using This Page</a>
-      <a href="#ExamPattern">Core Patterns</a>
-      <a href="#KnowCold">Core Facts</a>
-      <a href="#Topic1">Sampling</a>
-      <a href="#Topic2">Transforms</a>
-      <a href="#Topic3">Textures</a>
-      <a href="#Topic4">Curves & Meshes</a>
-      <a href="#Topic5">Ray Tracing</a>
-      <a href="#Topic6">Radiometry & Monte Carlo</a>
-      <a href="#Traps">Traps</a>
-      <a href="#Checks">Checks & Answers</a>
-      <a href="#Plan">Practice Flow</a>
-    </div>
-  </nav>
-
-  <main class="page">
-
-    <section id="HowToUse" class="content">
-      <h2>Using This Page</h2>
-      <p>
+<header class="hero">
+<div class="hero-inner">
+<div class="course-line">CS 184 / Graphics Theory</div>
+<h1 class="title">Graphics Theory Reference</h1>
+<div class="byline">sampling, geometry, and rendering</div>
+<div class="meta">
+<div><span class="meta-label">Coverage:</span> sampling, antialiasing, transforms, texture mapping, curves, meshes, ray tracing, radiometry, Monte Carlo integration</div>
+<div><span class="meta-label">Built from:</span> lecture slides, review material, HW1, HW2, and Spring 2020–2025 course questions</div>
+<div><span class="meta-label">Focus:</span> core concepts, equations, reasoning patterns, and practical reminders</div>
+</div>
+</div>
+</header>
+<nav aria-label="Table of contents" class="toc">
+<div class="toc-inner">
+<div class="toc-title">Contents</div>
+<a href="#HowToUse">Using This Page</a>
+<a href="#ExamPattern">Core Patterns</a>
+<a href="#KnowCold">Core Facts</a><a href="#Notation">Notation &amp; Definitions</a>
+<a href="#Topic1">Sampling</a>
+<a href="#Topic2">Transforms</a>
+<a href="#Topic3">Textures</a>
+<a href="#Topic4">Curves &amp; Meshes</a>
+<a href="#Topic5">Ray Tracing</a>
+<a href="#Topic6">Radiometry &amp; Monte Carlo</a>
+<a href="#Traps">Traps</a>
+<a href="#Checks">Checks &amp; Answers</a>
+<a href="#Plan">Practice Flow</a>
+</div>
+</nav>
+<main class="page">
+<section class="content" id="HowToUse">
+<h2>Using This Page</h2>
+<p>
         This page collects the core ideas from the course in one place. Use it to review three things:
         <strong>recognition</strong> of what a graphics question is really about, <strong>recall</strong> of the main facts and formulas,
         and <strong>execution</strong> of the standard reasoning patterns behind the topics.
       </p>
-      <p>
+<p>
         Work in layers. First, read the <em>Know Cold</em> section and make sure every line there feels immediate. Then drill the topic sections,
         especially the “what to recognize” and “common mistakes” boxes. After that, cover the page and try to restate the key ideas out loud.
         Finally, use the questions and answers section and the old course questions to test whether you can pull the ideas up quickly, not just recognize them once you see them.
       </p>
-
-      <div class="subgrid">
-        <div>
-          <h3>Fast workflow</h3>
-          <ul class="bullets">
-            <li>Read one topic section.</li>
-            <li>Cover the page and reproduce the checklist or formula from memory.</li>
-            <li>Do 3–5 old exam questions from that topic.</li>
-            <li>Mark what felt slow or fuzzy and turn it into a flashcard.</li>
-            <li>Repeat until the topic feels boringly familiar.</li>
-          </ul>
-        </div>
-        <figure class="figure">
-          <div class="figure-box">
-            <img src="images/study_sampling_aliasing.png" alt="Sampling and aliasing concept sketch">
-          </div>
-          <figcaption class="caption">Figure 1. Sampling mindset: high frequencies alias unless filtered or sampled densely enough.</figcaption>
-        </figure>
-      </div>
-
-      <div class="divider"></div>
-    </section>
-
-    <section id="ExamPattern" class="content">
-      <h2>Core Patterns in the Material</h2>
-      <p>
+<div class="subgrid">
+<div>
+<h3>Fast workflow</h3>
+<ul class="bullets">
+<li>Read one topic section.</li>
+<li>Cover the page and reproduce the checklist or formula from memory.</li>
+<li>Do 3–5 old exam questions from that topic.</li>
+<li>Mark what felt slow or fuzzy and turn it into a flashcard.</li>
+<li>Repeat until the topic feels boringly familiar.</li>
+</ul>
+</div>
+<figure class="figure">
+<div class="figure-box">
+<img alt="Sampling and aliasing concept sketch" src="images/study_sampling_aliasing.png"/>
+</div>
+<figcaption class="caption">Figure 1. Sampling mindset: high frequencies alias unless filtered or sampled densely enough.</figcaption>
+</figure>
+</div>
+<div class="divider"></div>
+</section>
+<section class="content" id="ExamPattern">
+<h2>Core Patterns in the Material</h2>
+<p>
         Across the lecture packet, review material, homework, and past course questions, the same patterns show up again and again:
         short conceptual checks, multi-step reasoning about the pipeline, local geometric computations, and probabilistic reasoning in rendering.
         That means preparation should emphasize both precision and flexibility.
       </p>
-
-      <h3>Recurring patterns across the course material</h3>
-      <div class="twocol">
-        <div>
-          <ul class="bullets">
-            <li><strong>True / False:</strong> aliasing, Nyquist, commutativity of transforms, perspective division, mip levels, Z-buffer behavior, spline and Bézier facts, subdivision counts, BVH facts, radiometric units, Monte Carlo unbiasedness, Russian roulette.</li>
-            <li><strong>Pipeline / rasterization:</strong> inside tests, bounding boxes, supersampling logic, barycentric interpolation, sample locations, depth comparisons.</li>
-            <li><strong>Transforms:</strong> composing matrices, order of operations, interpreting a matrix geometrically, homogeneous coordinates, converting between frame-to-world and world-to-frame views.</li>
-            <li><strong>Curves / meshes:</strong> de Casteljau, Catmull-Rom, Hermite data, convex hull property, Loop subdivision growth, half-edge local operations.</li>
-          </ul>
-        </div>
-        <div>
-          <ul class="bullets">
-            <li><strong>Ray tracing:</strong> ray–sphere intersection, ray–triangle / plane reasoning, \(t\)-interval logic, BVH purpose, recursive ray ideas.</li>
-            <li><strong>Radiometry:</strong> radiance, irradiance, illuminance, solid angle, Lambertian BRDF, units.</li>
-            <li><strong>Monte Carlo:</strong> estimator structure, PDFs, importance sampling, unbiasedness versus variance, Russian roulette.</li>
-            <li><strong>“Explain why” prompts:</strong> they often want one clean sentence with the correct underlying principle, not a giant paragraph.</li>
-          </ul>
-        </div>
-      </div>
-
-      <h3>What this means for you</h3>
-      <p class="note">
+<h3>Recurring patterns across the course material</h3>
+<div class="twocol">
+<div>
+<ul class="bullets">
+<li><strong>True / False:</strong> aliasing, Nyquist, commutativity of transforms, perspective division, mip levels, Z-buffer behavior, spline and Bézier facts, subdivision counts, BVH facts, radiometric units, Monte Carlo unbiasedness, Russian roulette.</li>
+<li><strong>Pipeline / rasterization:</strong> inside tests, bounding boxes, supersampling logic, barycentric interpolation, sample locations, depth comparisons.</li>
+<li><strong>Transforms:</strong> composing matrices, order of operations, interpreting a matrix geometrically, homogeneous coordinates, converting between frame-to-world and world-to-frame views.</li>
+<li><strong>Curves / meshes:</strong> de Casteljau, Catmull-Rom, Hermite data, convex hull property, Loop subdivision growth, half-edge local operations.</li>
+</ul>
+</div>
+<div>
+<ul class="bullets">
+<li><strong>Ray tracing:</strong> ray–sphere intersection, ray–triangle / plane reasoning, \(t\)-interval logic, BVH purpose, recursive ray ideas.</li>
+<li><strong>Radiometry:</strong> radiance, irradiance, illuminance, solid angle, Lambertian BRDF, units.</li>
+<li><strong>Monte Carlo:</strong> estimator structure, PDFs, importance sampling, unbiasedness versus variance, Russian roulette.</li>
+<li><strong>“Explain why” prompts:</strong> they often want one clean sentence with the correct underlying principle, not a giant paragraph.</li>
+</ul>
+</div>
+</div>
+<h3>What this means for you</h3>
+<p class="note">
         Many questions in this material reduce to spotting the exact principle quickly:
         “this is really a transform-order question,” “this is really Nyquist,” “this is really about what mip level means,” or “this is really unbiasedness versus variance.”
       </p>
-
-      <div class="divider"></div>
-    </section>
-
-    <section id="KnowCold" class="content">
-      <h2>Core Facts</h2>
-      <p>
+<div class="divider"></div>
+</section>
+<section class="content" id="KnowCold">
+<h2>Core Facts</h2>
+<p>
         This is the compact core of the page. These facts show up repeatedly and connect directly to the larger reasoning problems.
       </p>
-
-      <div class="threecol">
-        <div class="card">
-          <h3>Sampling / Antialiasing</h3>
-          <ul class="bullets">
-            <li>Nyquist: sample above twice the highest frequency to avoid aliasing.</li>
-            <li>Aliasing is frequency folding after undersampling.</li>
-            <li>Antialiasing = low-pass filter before sampling, or supersample then downsample.</li>
-            <li>Supersampling improves edge coverage and fine detail.</li>
-            <li>You do not resolve each triangle independently into the final framebuffer.</li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <h3>Transforms / Pipeline</h3>
-          <ul class="bullets">
-            <li>Order matters: matrix multiplication is not commutative.</li>
-            <li>Translation requires homogeneous coordinates.</li>
-            <li>Perspective involves a division.</li>
-            <li>Z-buffer stores closest depth seen so far.</li>
-            <li>Object \(\rightarrow\) world \(\rightarrow\) camera \(\rightarrow\) clip \(\rightarrow\) NDC \(\rightarrow\) screen.</li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <h3>Textures / Mipmaps</h3>
-          <ul class="bullets">
-            <li>Bilinear = interpolation within one mip level.</li>
-            <li>Trilinear = bilinear in two mip levels + interpolation across levels.</li>
-            <li>Smaller screen footprint with same UV stretch usually means higher mip level.</li>
-            <li>Total mipmap storage is about \(\frac{4}{3}\) of the base level.</li>
-            <li>Level choice depends on UV footprint, not just triangle size alone.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="threecol">
-        <div class="card">
-          <h3>Curves / Splines</h3>
-          <ul class="bullets">
-            <li>Cubic Bézier uses 4 control points.</li>
-            <li>de Casteljau for one cubic evaluation computes 6 intermediate lerps.</li>
-            <li>Bézier curve stays in convex hull of control points.</li>
-            <li>Hermite uses endpoint positions and endpoint tangents.</li>
-            <li>Catmull-Rom interpolates through interior control points.</li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <h3>Meshes / Subdivision</h3>
-          <ul class="bullets">
-            <li>After \(k\) Loop subdivisions, triangle count becomes \(N \cdot 4^k\).</li>
-            <li>Half-edge operations are local connectivity rewrites.</li>
-            <li>Area-weighted normals average adjacent face normals.</li>
-            <li>Edge collapse in a triangle manifold interior removes two faces.</li>
-            <li>Subdivision smooths but does not preserve exact shape.</li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <h3>Ray Tracing / MC</h3>
-          <ul class="bullets">
-            <li>Ray–sphere intersection leads to a quadratic.</li>
-            <li>BVH nodes store a box containing all geometry below them.</li>
-            <li>Irradiance units: \(W / m^2\).</li>
-            <li>Hemisphere solid angle is \(2\pi\) steradians.</li>
-            <li>Monte Carlo estimators can be unbiased but noisy; importance sampling lowers variance when matched well.</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-    </section>
-
-    <section id="Topic1" class="content">
-      <h2>Topic 1: Sampling, Aliasing, and Antialiasing</h2>
-
-      <div class="subgrid">
-        <div>
-          <h3>Core idea</h3>
-          <p>
+<div class="threecol">
+<div class="card">
+<h3>Sampling / Antialiasing</h3>
+<ul class="bullets">
+<li>Nyquist: sample above twice the highest frequency to avoid aliasing.</li>
+<li>Aliasing is frequency folding after undersampling.</li>
+<li>Antialiasing = low-pass filter before sampling, or supersample then downsample.</li>
+<li>Supersampling improves edge coverage and fine detail.</li>
+<li>You do not resolve each triangle independently into the final framebuffer.</li>
+</ul>
+</div>
+<div class="card">
+<h3>Transforms / Pipeline</h3>
+<ul class="bullets">
+<li>Order matters: matrix multiplication is not commutative.</li>
+<li>Translation requires homogeneous coordinates.</li>
+<li>Perspective involves a division.</li>
+<li>Z-buffer stores closest depth seen so far.</li>
+<li>Object \(\rightarrow\) world \(\rightarrow\) camera \(\rightarrow\) clip \(\rightarrow\) NDC \(\rightarrow\) screen.</li>
+</ul>
+</div>
+<div class="card">
+<h3>Textures / Mipmaps</h3>
+<ul class="bullets">
+<li>Bilinear = interpolation within one mip level.</li>
+<li>Trilinear = bilinear in two mip levels + interpolation across levels.</li>
+<li>Smaller screen footprint with same UV stretch usually means higher mip level.</li>
+<li>Total mipmap storage is about \(\frac{4}{3}\) of the base level.</li>
+<li>Level choice depends on UV footprint, not just triangle size alone.</li>
+</ul>
+</div>
+</div>
+<div class="threecol">
+<div class="card">
+<h3>Curves / Splines</h3>
+<ul class="bullets">
+<li>Cubic Bézier uses 4 control points.</li>
+<li>de Casteljau for one cubic evaluation computes 6 intermediate lerps.</li>
+<li>Bézier curve stays in convex hull of control points.</li>
+<li>Hermite uses endpoint positions and endpoint tangents.</li>
+<li>Catmull-Rom interpolates through interior control points.</li>
+</ul>
+</div>
+<div class="card">
+<h3>Meshes / Subdivision</h3>
+<ul class="bullets">
+<li>After \(k\) Loop subdivisions, triangle count becomes \(N \cdot 4^k\).</li>
+<li>Half-edge operations are local connectivity rewrites.</li>
+<li>Area-weighted normals average adjacent face normals.</li>
+<li>Edge collapse in a triangle manifold interior removes two faces.</li>
+<li>Subdivision smooths but does not preserve exact shape.</li>
+</ul>
+</div>
+<div class="card">
+<h3>Ray Tracing / MC</h3>
+<ul class="bullets">
+<li>Ray–sphere intersection leads to a quadratic.</li>
+<li>BVH nodes store a box containing all geometry below them.</li>
+<li>Irradiance units: \(W / m^2\).</li>
+<li>Hemisphere solid angle is \(2\pi\) steradians.</li>
+<li>Monte Carlo estimators can be unbiased but noisy; importance sampling lowers variance when matched well.</li>
+</ul>
+</div>
+</div>
+<div class="divider"></div>
+</section><section class="content" id="Notation">
+<h2>Notation and Definitions</h2>
+<p>
+    This section fixes the foundation for the rest of the page. When a variable or symbol appears later, it should refer back to one of these meanings unless the surrounding text explicitly says otherwise.
+  </p>
+<h3>Signals, images, samples, and frequencies</h3>
+<div class="twocol">
+<div>
+<ul class="bullets">
+<li><strong>Signal:</strong> any quantity that varies over some domain, such as intensity over image position, color over texture coordinates, or radiance over direction.</li>
+<li><strong>Continuous signal:</strong> a signal defined for all points in a continuous domain.</li>
+<li><strong>Discrete signal:</strong> a signal known only at sampled locations.</li>
+<li><strong>Sample:</strong> one measured or evaluated value of a signal at a chosen location.</li>
+<li><strong>Sampling rate:</strong> the density of samples per unit length, area, time, angle, or other domain variable.</li>
+<li><strong>Frequency:</strong> how rapidly a signal changes. High frequency means fast oscillation or fine detail; low frequency means slow variation.</li>
+<li><strong>Nyquist rate:</strong> twice the highest frequency present in the signal. Sampling below that rate risks aliasing.</li>
+<li><strong>Aliasing:</strong> the phenomenon in which high-frequency content is misrepresented as false low-frequency content after sampling.</li>
+<li><strong>Antialiasing:</strong> any method that reduces aliasing, usually by prefiltering, higher sample density, or better reconstruction.</li>
+<li><strong>Reconstruction:</strong> building a continuous approximation from discrete samples.</li>
+<li><strong>Pixel:</strong> one output image cell in the final raster image.</li>
+<li><strong>Subsample / sample point:</strong> one of the internal sample locations used inside a pixel during supersampling.</li>
+</ul>
+</div>
+<div>
+<ul class="bullets">
+<li><strong>Rasterization:</strong> converting projected geometric primitives into discrete sample or pixel values on a raster grid.</li>
+<li><strong>Coverage:</strong> the fraction or pattern of a pixel or sample grid covered by a primitive.</li>
+<li><strong>Prefiltering:</strong> low-pass filtering before sampling so frequencies above the sampleable range are reduced.</li>
+<li><strong>Postfiltering:</strong> filtering after sampling. This can blur visible aliases, but it does not undo the frequency folding that already happened.</li>
+<li><strong>Barycentric coordinates:</strong> weights attached to the three vertices of a triangle. For a point <span>\(p\)</span> in the triangle’s plane, the weights <span>\(\alpha,\beta,\gamma\)</span> satisfy <span>\(p = \alpha p_0 + \beta p_1 + \gamma p_2\)</span> and <span>\(\alpha + \beta + \gamma = 1\)</span>.</li>
+<li><strong>Inside condition for triangles:</strong> under the usual orientation convention, a point is inside when <span>\(\alpha,\beta,\gamma \ge 0\)</span> in addition to summing to 1.</li>
+</ul>
+</div>
+</div>
+<h3>Coordinate systems, vectors, and transforms</h3>
+<div class="twocol">
+<div>
+<ul class="bullets">
+<li><strong>Point:</strong> a location in space, written for example as <span>\((x,y)\)</span> or <span>\((x,y,z)\)</span>.</li>
+<li><strong>Vector:</strong> a displacement or direction, not anchored to a specific position.</li>
+<li><strong>Matrix:</strong> a rectangular array representing a linear map, or in homogeneous coordinates an affine or projective transform.</li>
+<li><strong>Homogeneous coordinates:</strong> coordinates with one extra component <span>\(w\)</span> so translation and perspective can be represented with matrix multiplication before the final divide.</li>
+<li><strong>Affine transform:</strong> a transform that preserves straight lines and ratios along lines; examples include translation, rotation, scale, and shear.</li>
+<li><strong>Perspective projection:</strong> the map from 3D viewing space to a 2D image in which farther objects appear smaller; implemented through homogeneous projection followed by division by <span>\(w\)</span>.</li>
+</ul>
+</div>
+<div>
+<ul class="bullets">
+<li><strong>Object space:</strong> coordinates local to the model.</li>
+<li><strong>World space:</strong> a shared scene coordinate system.</li>
+<li><strong>View / camera space:</strong> coordinates relative to the camera.</li>
+<li><strong>Clip space:</strong> coordinates after projection but before perspective divide.</li>
+<li><strong>NDC:</strong> normalized device coordinates obtained after dividing by <span>\(w\)</span>.</li>
+<li><strong>Screen / raster space:</strong> discrete image coordinates used for pixels and samples.</li>
+<li><strong>Depth:</strong> the camera-relative distance coordinate used for visibility tests.</li>
+<li><strong>Z-buffer:</strong> a per-pixel or per-sample array storing the smallest depth seen so far.</li>
+</ul>
+</div>
+</div>
+<h3>Textures, UV coordinates, and filtering</h3>
+<div class="twocol">
+<div>
+<ul class="bullets">
+<li><strong>Texture:</strong> sampled image data attached to a surface.</li>
+<li><strong>Texel:</strong> one discrete sample stored in a texture image.</li>
+<li><strong>Texture coordinates:</strong> coordinates <span>\((u,v)\)</span> used to address a point in texture space.</li>
+<li><strong>UV mapping:</strong> the assignment of texture coordinates to surface points or mesh vertices.</li>
+<li><strong>Magnification:</strong> the regime in which one texel covers many screen pixels.</li>
+<li><strong>Minification:</strong> the regime in which one screen pixel covers many texels.</li>
+</ul>
+</div>
+<div>
+<ul class="bullets">
+<li><strong>Nearest filtering:</strong> sample the closest texel center.</li>
+<li><strong>Bilinear filtering:</strong> interpolate the values of the four nearest texels inside one mip level.</li>
+<li><strong>Trilinear filtering:</strong> bilinearly filter in two neighboring mip levels and linearly blend the two results.</li>
+<li><strong>Mipmap:</strong> a pyramid of prefiltered texture images at progressively lower resolutions.</li>
+<li><strong>Pixel footprint in texture space:</strong> the region in UV space covered by one screen pixel; this determines the right mip level.</li>
+<li><strong>UV derivatives:</strong> local rates such as <span>\(\partial u/\partial x\)</span>, <span>\(\partial v/\partial x\)</span>, <span>\(\partial u/\partial y\)</span>, and <span>\(\partial v/\partial y\)</span> used to estimate texture footprint.</li>
+</ul>
+</div>
+</div>
+<h3>Curves, surfaces, and meshes</h3>
+<div class="twocol">
+<div>
+<ul class="bullets">
+<li><strong>Interpolation:</strong> constructing a function or curve that passes through specified data values.</li>
+<li><strong>Control point:</strong> a point used to shape a curve or surface; depending on the representation it may or may not lie on the final shape.</li>
+<li><strong>Parameter:</strong> an input variable, usually written <span>\(t\)</span> for curves or <span>\((u,v)\)</span> for surfaces.</li>
+<li><strong>Cubic Bézier curve:</strong> a degree-3 parametric curve defined by four control points.</li>
+<li><strong>de Casteljau algorithm:</strong> recursive evaluation of a Bézier curve by repeated linear interpolation.</li>
+<li><strong>Hermite curve:</strong> a cubic curve determined by endpoint positions and endpoint tangents.</li>
+<li><strong>Catmull–Rom spline:</strong> an interpolating spline whose tangent information is inferred from neighboring control points.</li>
+</ul>
+</div>
+<div>
+<ul class="bullets">
+<li><strong>Surface normal:</strong> a vector perpendicular to a surface at a point.</li>
+<li><strong>Face normal:</strong> a normal computed from a polygon or triangle face, often using a cross product of edge vectors.</li>
+<li><strong>Vertex normal:</strong> a smoothed normal obtained by combining neighboring face normals.</li>
+<li><strong>Half-edge structure:</strong> a mesh representation storing local adjacency via directed half-edges.</li>
+<li><strong>Subdivision:</strong> refining a mesh into a denser mesh according to local rules.</li>
+<li><strong>Loop subdivision:</strong> a subdivision scheme for triangle meshes that creates four children per old triangle and smooths the surface.</li>
+</ul>
+</div>
+</div>
+<h3>Rays, light transport, and Monte Carlo quantities</h3>
+<div class="twocol">
+<div>
+<ul class="bullets">
+<li><strong>Ray:</strong> a half-line written <span>\(r(t)=o+td\)</span>, where <span>\(o\)</span> is origin, <span>\(d\)</span> is direction, and <span>\(t\)</span> is distance parameter along the ray.</li>
+<li><strong>Intersection parameter:</strong> the value <span>\(t\)</span> at which a ray hits a surface. Only values in the valid interval count.</li>
+<li><strong>BVH:</strong> a bounding volume hierarchy that groups objects into recursively nested bounding boxes.</li>
+<li><strong>Bounding box:</strong> a simple volume, often axis-aligned, that encloses geometry for fast rejection tests.</li>
+</ul>
+</div>
+<div>
+<ul class="bullets">
+<li><strong>Flux</strong> <span>\(\Phi\)</span>: radiant power, measured in watts.</li>
+<li><strong>Irradiance</strong> <span>\(E\)</span>: incident flux per unit area, in <span>\(W/m^2\)</span>.</li>
+<li><strong>Radiance</strong> <span>\(L\)</span>: power per unit projected area per unit solid angle, the directional light quantity used in rendering.</li>
+<li><strong>BRDF</strong> <span>\(f_r\)</span>: bidirectional reflectance distribution function; it maps incoming and outgoing directions to reflected light response.</li>
+<li><strong>PDF</strong> <span>\(p(x)\)</span>: probability density function used for random sampling in continuous domains.</li>
+<li><strong>Estimator:</strong> a random variable built from samples to estimate a target quantity such as an integral.</li>
+<li><strong>Unbiased:</strong> expected value equals the true target quantity.</li>
+<li><strong>Variance:</strong> how much estimator values fluctuate around their expected value.</li>
+<li><strong>Importance sampling:</strong> sampling from a PDF chosen to more closely match the integrand, usually to reduce variance.</li>
+</ul>
+</div>
+</div>
+<h3>Standard variable meanings used later</h3>
+<div class="code"><code>
+p, p0, p1, p2     = points or triangle vertices
+x, y, z           = Cartesian coordinates in space
+u, v              = texture-space coordinates or surface parameters
+w                 = homogeneous coordinate used before perspective divide
+α, β, γ           = barycentric weights for a triangle
+M, T, R, S        = generic transform, translation, rotation, and scale matrices
+o                 = ray origin
+d                 = ray direction
+t                 = scalar parameter along a ray or along a curve
+c                 = sphere center
+R                 = sphere radius
+n                 = surface normal
+l                 = incoming light direction
+v                 = outgoing/view direction when used in shading context
+h                 = half-vector between light and view directions
+Φ, E, L           = flux, irradiance, radiance
+f(x)              = integrand or signal value at x
+p(x)              = probability density function used to draw x
+N                 = number of samples in a Monte Carlo estimator
+  </code></div>
+<div class="note">
+    Same letter, different topic: some symbols are reused across graphics. For example <span>\(R\)</span> may mean a rotation matrix in transforms or a sphere radius in ray tracing. The surrounding topic decides the meaning, so always read symbols together with their local section.
+  </div>
+<div class="divider"></div>
+</section>
+<section class="content" id="Topic1">
+<h2>Topic 1: Sampling, Aliasing, and Antialiasing</h2>
+<div class="subgrid">
+<div>
+<h3>Core idea</h3><div class="note"><strong>Variables used here.</strong> Let <span>\(f(x)\)</span> or <span>\(f(u,v)\)</span> denote the underlying continuous signal. Let <span>\(f_s\)</span> denote the sampled version. Let <span>\(f_{max}\)</span> be the highest frequency present. Let <span>\((x,y)\)</span> be image-plane coordinates, and let <span>\(\alpha,\beta,\gamma\)</span> be barycentric coordinates relative to triangle vertices <span>\(p_0,p_1,p_2\)</span>.</div>
+<p>
             A continuous signal can contain frequencies too high for a given sampling rate to represent faithfully.
             When that happens, those frequencies masquerade as lower frequencies after sampling. That is aliasing.
             The Nyquist principle says that if the highest frequency present is \(f_{max}\), then the sampling frequency must exceed \(2f_{max}\)
             to avoid aliasing.
           </p>
-
-          <h3>What to recognize on an exam</h3>
-          <ul class="bullets">
-            <li>If the question mentions jaggies, moiré, wagon-wheel effects, or repeated wrong patterns, think <strong>aliasing</strong>.</li>
-            <li>If it asks how to reduce aliasing, think <strong>prefiltering</strong>, <strong>supersampling</strong>, or <strong>better reconstruction</strong>.</li>
-            <li>If it asks why supersampling helps, think <strong>more sample points capture more of the underlying variation before averaging</strong>.</li>
-          </ul>
-        </div>
-
-        <figure class="figure">
-          <div class="figure-box">
-            <img src="images/study_texture_mipmap.png" alt="Texture footprint and mip level sketch">
-          </div>
-          <figcaption class="caption">Figure 2. Screen-space footprints and filtering are really sampling questions wearing different clothes.</figcaption>
-        </figure>
-      </div>
-
-      <h3>Rasterization and supersampling</h3>
-      <p>
+<h3>What to recognize on an exam</h3>
+<ul class="bullets">
+<li>If the question mentions jaggies, moiré, wagon-wheel effects, or repeated wrong patterns, think <strong>aliasing</strong>.</li>
+<li>If it asks how to reduce aliasing, think <strong>prefiltering</strong>, <strong>supersampling</strong>, or <strong>better reconstruction</strong>.</li>
+<li>If it asks why supersampling helps, think <strong>more sample points capture more of the underlying variation before averaging</strong>.</li>
+</ul>
+</div>
+<figure class="figure">
+<div class="figure-box">
+<img alt="Texture footprint and mip level sketch" src="images/study_texture_mipmap.png"/>
+</div>
+<figcaption class="caption">Figure 2. Screen-space footprints and filtering are really sampling questions wearing different clothes.</figcaption>
+</figure>
+</div>
+<h3>Rasterization and supersampling</h3>
+<p>
         In basic rasterization, each pixel is tested against geometry using one or more sample points. In supersampling, each pixel contains several subsamples.
         You rasterize into that higher-resolution sample grid first, then resolve to a final color by averaging down. That is why supersampling is conceptually
         closer to “sample more densely, then low-pass” than to “blur afterward.”
       </p>
-
-      <div class="formula">
-        <strong>Useful mental sentence:</strong> supersampling does <em>not</em> mean “finish one triangle completely into the final framebuffer, then move on.”
+<div class="formula">
+<strong>Useful mental sentence:</strong> supersampling does <em>not</em> mean “finish one triangle completely into the final framebuffer, then move on.”
         All triangles should contribute to the sample buffer before the resolve step.
       </div>
-
-      <h3>Inside tests and barycentric thinking</h3>
-      <p>
+<h3>Inside tests and barycentric thinking</h3><p><strong>Full barycentric definition.</strong> If <span>\(p\)</span> lies in the plane of the triangle with vertices <span>\(p_0,p_1,p_2\)</span>, then barycentric coordinates are the unique scalars <span>\(\alpha,\beta,\gamma\)</span> such that <span>\(p = \alpha p_0 + \beta p_1 + \gamma p_2\)</span> and <span>\(\alpha+\beta+\gamma=1\)</span>. These coordinates are useful because any linearly varying vertex quantity <span>\(q\)</span>, such as color, depth, normal, or texture coordinates, can be interpolated as <span>\(q(p)=\alpha q_0+\beta q_1+\gamma q_2\)</span>.</p>
+<p>
         For triangles, point-in-triangle tests often use edge functions or barycentric coordinates. A point is inside only if the barycentric coordinates satisfy the full inside condition,
         not merely that they sum to 1. Summing to 1 is necessary for affine combination, but not sufficient for inside-ness; you also need each coordinate to be nonnegative
         when using the standard convention for points inside the triangle.
       </p>
-
-      <h3>Common mistakes</h3>
-      <ul class="bullets">
-        <li>Confusing aliasing with blur. Blur can reduce aliasing, but blur is not aliasing.</li>
-        <li>Thinking Nyquist uses “twice the number of samples” in some vague sense. It is specifically about <strong>frequency content</strong>.</li>
-        <li>Thinking “barycentric coordinates sum to 1” alone implies the point is inside a triangle.</li>
-        <li>Resolving each primitive separately instead of accumulating all primitive contributions before the downsample.</li>
-      </ul>
-
-      <h3>Mini checklist for any sampling question</h3>
-      <ol class="numbered">
-        <li>What is being sampled: image, texture, time signal, geometry coverage?</li>
-        <li>What is the relevant frequency content?</li>
-        <li>Is the sampling rate high enough?</li>
-        <li>If not, what filtering or denser sampling can reduce aliasing?</li>
-      </ol>
-
-      <div class="divider"></div>
-    </section>
-
-    <section id="Topic2" class="content">
-      <h2>Topic 2: Transforms, Homogeneous Coordinates, and the Graphics Pipeline</h2>
-
-      <div class="subgrid">
-        <div>
-          <h3>Core idea</h3>
-          <p>
+<h3>Common mistakes</h3>
+<ul class="bullets">
+<li>Confusing aliasing with blur. Blur can reduce aliasing, but blur is not aliasing.</li>
+<li>Thinking Nyquist uses “twice the number of samples” in some vague sense. It is specifically about <strong>frequency content</strong>.</li>
+<li>Thinking “barycentric coordinates sum to 1” alone implies the point is inside a triangle.</li>
+<li>Resolving each primitive separately instead of accumulating all primitive contributions before the downsample.</li>
+</ul>
+<h3>Mini checklist for any sampling question</h3>
+<ol class="numbered">
+<li>What is being sampled: image, texture, time signal, geometry coverage?</li>
+<li>What is the relevant frequency content?</li>
+<li>Is the sampling rate high enough?</li>
+<li>If not, what filtering or denser sampling can reduce aliasing?</li>
+</ol>
+<div class="divider"></div>
+</section>
+<section class="content" id="Topic2">
+<h2>Topic 2: Transforms, Homogeneous Coordinates, and the Graphics Pipeline</h2>
+<div class="subgrid">
+<div>
+<h3>Core idea</h3><div class="note"><strong>Variables used here.</strong> A point in homogeneous coordinates is written <span>\(\tilde p=(x,y,z,w)^T\)</span>. When <span>\(w\neq 0\)</span>, the Cartesian point is <span>\((x/w, y/w, z/w)\)</span>. A transform matrix is usually written <span>\(M\)</span>, with common factors <span>\(T\)</span> for translation, <span>\(R\)</span> for rotation, and <span>\(S\)</span> for scale.</div>
+<p>
             Graphics transforms let us move between coordinate systems. The most important habits are: keep track of <strong>what space you are in</strong>,
             remember that <strong>order matters</strong>, and know that <strong>translation and perspective need homogeneous coordinates</strong>.
           </p>
-
-          <h3>Standard matrix forms</h3>
-          <div class="code"><code>
+<h3>Standard matrix forms</h3>
+<div class="code"><code>
 2D translation:
 [1 0 tx]
 [0 1 ty]
@@ -302,193 +427,164 @@
 [0  sy  0]
 [0   0  1]
           </code></div>
-        </div>
-
-        <figure class="figure">
-          <div class="figure-box">
-            <img src="images/study_transform_pipeline.png" alt="Transform pipeline diagram">
-          </div>
-          <figcaption class="caption">Figure 3. The main exam habit: always ask what space a point is currently living in.</figcaption>
-        </figure>
-      </div>
-
-      <h3>Why homogeneous coordinates matter</h3>
-      <p>
+</div>
+<figure class="figure">
+<div class="figure-box">
+<img alt="Transform pipeline diagram" src="images/study_transform_pipeline.png"/>
+</div>
+<figcaption class="caption">Figure 3. The main exam habit: always ask what space a point is currently living in.</figcaption>
+</figure>
+</div>
+<h3>Why homogeneous coordinates matter</h3><p><strong>Point versus vector convention.</strong> In homogeneous form, points usually use <span>\(w=1\)</span> while pure direction vectors use <span>\(w=0\)</span>. That is why translation changes a point but does not change a direction vector. This distinction matters later for normals, light directions, and ray directions.</p>
+<p>
         Linear \(2 \times 2\) or \(3 \times 3\) matrices alone cannot represent translation of points as a pure matrix multiply in Cartesian coordinates.
         Homogeneous coordinates add one extra coordinate so translation becomes linear in the higher-dimensional representation. Perspective projection also ends with a division,
         which is why “perspective requires division” keeps appearing in the old exams.
       </p>
-
-      <h3>Order of operations</h3>
-      <p>
+<h3>Order of operations</h3>
+<p>
         Matrix products are applied right-to-left to column vectors. So if you write \(M = T R S\), then the point is first scaled, then rotated, then translated.
         This is where many exam mistakes come from. Rotating then translating is usually not the same as translating then rotating. Scaling then rotating is also
         not the same as rotating then scaling unless the scaling is uniform and the circumstances make the operations commute.
       </p>
-
-      <h3>Fast recognition cues</h3>
-      <ul class="bullets">
-        <li>If a picture shows the object staying attached to a particular corner or pivot, the transform probably includes <strong>translate to pivot, rotate/scale, translate back</strong>.</li>
-        <li>If a matrix has a last column with nonzero entries in homogeneous form, it includes a translation component.</li>
-        <li>If the question says “frame-to-world” versus “world-to-frame,” think inverse transforms and reversed order.</li>
-      </ul>
-
-      <h3>Pipeline sequence</h3>
-      <p>
+<h3>Fast recognition cues</h3>
+<ul class="bullets">
+<li>If a picture shows the object staying attached to a particular corner or pivot, the transform probably includes <strong>translate to pivot, rotate/scale, translate back</strong>.</li>
+<li>If a matrix has a last column with nonzero entries in homogeneous form, it includes a translation component.</li>
+<li>If the question says “frame-to-world” versus “world-to-frame,” think inverse transforms and reversed order.</li>
+</ul>
+<h3>Pipeline sequence</h3>
+<p>
         A clean mental model is:
       </p>
-      <div class="formula">
+<div class="formula">
         object space \(\rightarrow\) world space \(\rightarrow\) camera / view space \(\rightarrow\) clip space \(\rightarrow\) perspective divide \(\rightarrow\) normalized device coordinates \(\rightarrow\) screen / raster space
       </div>
-
-      <h3>Z-buffer essentials</h3>
-      <p>
+<h3>Z-buffer essentials</h3><p><strong>Depth variable.</strong> If the camera looks along the viewing direction and a fragment arrives with depth value <span>\(z_f\)</span>, then the stored buffer value <span>\(z_{buf}\)</span> is updated only when the new fragment is closer under the course’s chosen convention. The important idea is consistency: the test must use the same definition of closer everywhere in the pipeline.</p>
+<p>
         The Z-buffer stores the closest depth encountered so far for each pixel or sample. At the start of a new frame, you initialize it to the farthest possible depth,
         not zero by default. Then each new fragment updates the color and Z value only if it is closer than the stored value.
       </p>
-
-      <h3>Common mistakes</h3>
-      <ul class="bullets">
-        <li>Forgetting whether a matrix acts in world-to-camera or camera-to-world direction.</li>
-        <li>Multiplying in the wrong order or reading the order left-to-right when using column vectors.</li>
-        <li>Thinking perspective shrinkage goes like \(1/d^2\) instead of roughly \(1/d\) in image size.</li>
-        <li>Resetting the Z-buffer to zero instead of “infinitely far.”</li>
-      </ul>
-
-      <div class="divider"></div>
-    </section>
-
-    <section id="Topic3" class="content">
-      <h2>Topic 3: Texture Mapping, Filtering, and Mipmaps</h2>
-
-      <h3>Core idea</h3>
-      <p>
+<h3>Common mistakes</h3>
+<ul class="bullets">
+<li>Forgetting whether a matrix acts in world-to-camera or camera-to-world direction.</li>
+<li>Multiplying in the wrong order or reading the order left-to-right when using column vectors.</li>
+<li>Thinking perspective shrinkage goes like \(1/d^2\) instead of roughly \(1/d\) in image size.</li>
+<li>Resetting the Z-buffer to zero instead of “infinitely far.”</li>
+</ul>
+<div class="divider"></div>
+</section>
+<section class="content" id="Topic3">
+<h2>Topic 3: Texture Mapping, Filtering, and Mipmaps</h2>
+<h3>Core idea</h3><div class="note"><strong>Variables used here.</strong> Texture coordinates are <span>\((u,v)\)</span>. Texture lookup returns a value like <span>\(T(u,v)\)</span>. Screen coordinates are often <span>\((x,y)\)</span>. The local footprint is estimated from rates such as <span>\(\partial u/\partial x\)</span>, <span>\(\partial v/\partial x\)</span>, <span>\(\partial u/\partial y\)</span>, and <span>\(\partial v/\partial y\)</span>.</div>
+<p>
         Texture mapping asks how image data in texture space \((u,v)\) should be sampled when projected onto the screen. The central issue is that one screen sample often corresponds to
         a footprint covering more than one texel, especially for minification. That is why texture mapping is fundamentally another sampling problem.
       </p>
-
-      <h3>Nearest, bilinear, trilinear</h3>
-      <ul class="bullets">
-        <li><strong>Nearest:</strong> choose the closest texel center.</li>
-        <li><strong>Bilinear:</strong> interpolate among the four neighboring texels within one mip level.</li>
-        <li><strong>Trilinear:</strong> do bilinear in two adjacent mip levels and interpolate between the two results.</li>
-      </ul>
-
-      <h3>Mipmap logic</h3>
-      <p>
+<h3>Nearest, bilinear, trilinear</h3>
+<ul class="bullets">
+<li><strong>Nearest:</strong> choose the closest texel center.</li>
+<li><strong>Bilinear:</strong> interpolate among the four neighboring texels within one mip level.</li>
+<li><strong>Trilinear:</strong> do bilinear in two adjacent mip levels and interpolate between the two results.</li>
+</ul>
+<h3>Mipmap logic</h3>
+<p>
         Mipmaps precompute lower-resolution versions of the same texture so minification can be filtered more appropriately.
         The total storage cost is a geometric series:
       </p>
-      <div class="formula">
+<div class="formula">
         \(1 + \frac14 + \frac1{16} + \cdots = \frac{4}{3}\)
       </div>
-      <p>
+<p>
         So full mipmaps use about \(\frac43\) the memory of the base texture level.
       </p>
-
-      <h3>How level selection works conceptually</h3>
-      <p>
+<h3>How level selection works conceptually</h3><p><strong>Why derivatives appear.</strong> A single pixel covers a tiny square in screen space. After the surface parameterization maps that square into texture space, the corresponding region in UV can be stretched, skewed, or enlarged. The derivatives measure that local mapping rate, and the estimated footprint size determines the mip level <span>\(D\)</span>. Larger footprint means larger <span>\(D\)</span>, so the renderer uses a coarser prefiltered image.</p>
+<p>
         The chosen mip level depends on the size of the pixel footprint in texture space. If one screen pixel covers a large region of UV space, then the renderer should use a coarser mip level.
         In practical implementations, that footprint is estimated using derivatives such as \(du/dx, dv/dx, du/dy, dv/dy\), or equivalently nearby UV samples. Bigger footprint means bigger level.
       </p>
-
-      <h3>What to recognize on an exam</h3>
-      <ul class="bullets">
-        <li>If the object gets smaller on screen but its texture coordinates span the same range, expect a <strong>higher mip level</strong>.</li>
-        <li>If the question contrasts bilinear and trilinear, remember that only trilinear blends <strong>across levels</strong>.</li>
-        <li>If it asks why mipmaps help, answer in the language of <strong>antialiasing during minification</strong>.</li>
-      </ul>
-
-      <h3>Common mistakes</h3>
-      <ul class="bullets">
-        <li>Saying bilinear includes interpolation across mip levels.</li>
-        <li>Thinking mip level depends only on triangle area in screen space; it really depends on the UV footprint relative to the screen footprint.</li>
-        <li>Forgetting that magnification and minification are different regimes.</li>
-      </ul>
-
-      <div class="divider"></div>
-    </section>
-
-    <section id="Topic4" class="content">
-      <h2>Topic 4: Curves, Splines, Bézier Surfaces, Half-Edge Meshes, and Subdivision</h2>
-
-      <div class="subgrid">
-        <div>
-          <h3>Bézier curves and de Casteljau</h3>
-          <p>
+<h3>What to recognize on an exam</h3>
+<ul class="bullets">
+<li>If the object gets smaller on screen but its texture coordinates span the same range, expect a <strong>higher mip level</strong>.</li>
+<li>If the question contrasts bilinear and trilinear, remember that only trilinear blends <strong>across levels</strong>.</li>
+<li>If it asks why mipmaps help, answer in the language of <strong>antialiasing during minification</strong>.</li>
+</ul>
+<h3>Common mistakes</h3>
+<ul class="bullets">
+<li>Saying bilinear includes interpolation across mip levels.</li>
+<li>Thinking mip level depends only on triangle area in screen space; it really depends on the UV footprint relative to the screen footprint.</li>
+<li>Forgetting that magnification and minification are different regimes.</li>
+</ul>
+<div class="divider"></div>
+</section>
+<section class="content" id="Topic4">
+<h2>Topic 4: Curves, Splines, Bézier Surfaces, Half-Edge Meshes, and Subdivision</h2>
+<div class="subgrid">
+<div>
+<h3>Bézier curves and de Casteljau</h3><div class="note"><strong>Variables used here.</strong> The parameter <span>\(t\)</span> usually ranges from 0 to 1. Control points are <span>\(P_0,P_1,P_2,P_3\)</span> for a cubic Bézier curve. Intermediate points such as <span>\(Q_i\)</span> and <span>\(R_i\)</span> are produced by linear interpolation.</div>
+<p>
             de Casteljau evaluates a Bézier curve by repeated linear interpolation. For a cubic Bézier curve with control points
             \(P_0, P_1, P_2, P_3\), one evaluation performs three first-level lerps, then two second-level lerps, then one final lerp:
             six interpolated points total.
           </p>
-          <div class="formula">
+<div class="formula">
             \(Q_i = (1-t)P_i + tP_{i+1}\)
           </div>
-          <p>
+<p>
             Repeating this process until one point remains gives the point on the curve at parameter \(t\). The curve stays within the convex hull of its control points.
           </p>
-        </div>
-
-        <figure class="figure">
-          <div class="figure-box">
-            <img src="images/study_bezier_halfedge.png" alt="Bezier and half-edge concept sketch">
-          </div>
-          <figcaption class="caption">Figure 4. de Casteljau and half-edge questions both reward step-by-step local reasoning.</figcaption>
-        </figure>
-      </div>
-
-      <h3>Hermite and Catmull-Rom</h3>
-      <ul class="bullets">
-        <li><strong>Cubic Hermite:</strong> specified by two endpoint positions and two endpoint tangent vectors.</li>
-        <li><strong>Catmull-Rom:</strong> interpolates through the interior control points of a sequence without requiring tangent vectors to be given directly.</li>
-      </ul>
-
-      <h3>Bézier surfaces</h3>
-      <p>
+</div>
+<figure class="figure">
+<div class="figure-box">
+<img alt="Bezier and half-edge concept sketch" src="images/study_bezier_halfedge.png"/>
+</div>
+<figcaption class="caption">Figure 4. de Casteljau and half-edge questions both reward step-by-step local reasoning.</figcaption>
+</figure>
+</div>
+<h3>Hermite and Catmull-Rom</h3>
+<ul class="bullets">
+<li><strong>Cubic Hermite:</strong> specified by two endpoint positions and two endpoint tangent vectors.</li>
+<li><strong>Catmull-Rom:</strong> interpolates through the interior control points of a sequence without requiring tangent vectors to be given directly.</li>
+</ul>
+<h3>Bézier surfaces</h3>
+<p>
         Extend de Casteljau in one parameter direction to get intermediate points, then evaluate again in the other direction.
         The important exam habit is to explain the idea clearly rather than drowning in notation.
       </p>
-
-      <h3>Vertex normals</h3>
-      <p>
+<h3>Vertex normals</h3><p><strong>Variable definition for normals.</strong> If a triangle has vertices <span>\(a,b,c\)</span>, one face normal can be computed from <span>\((b-a)	imes(c-a)\)</span>. If adjacent face normals are <span>\(n_1,\dots,n_k\)</span> with associated areas <span>\(A_1,\dots,A_k\)</span>, an area-weighted vertex normal is proportional to <span>\(\sum_i A_i n_i\)</span>, followed by normalization.</p>
+<p>
         Smooth shading at a vertex often uses an area-weighted average of neighboring face normals. Each face normal is typically computed by a cross product of two edge vectors,
         scaled automatically by triangle area. Sum them, then normalize the result.
       </p>
-
-      <h3>Half-edge structure</h3>
-      <p>
+<h3>Half-edge structure</h3><p><strong>Core half-edge entities.</strong> A half-edge is a directed edge record. Its fields usually point to its <em>next</em> half-edge in the current face cycle, its <em>twin</em> half-edge across the same undirected edge, its incident <em>vertex</em>, its parent <em>edge</em>, and its incident <em>face</em>. Vertices, edges, and faces each store one representative half-edge so local traversals can begin there.</p>
+<p>
         A half-edge stores local mesh connectivity: next, twin, vertex, edge, and face references. Edge flip, split, and collapse are all local rewiring operations.
         The safest way to reason through them is to label the neighborhood, write down the before-and-after connectivity, and then check every pointer.
       </p>
-
-      <h3>Loop subdivision</h3>
-      <p>
+<h3>Loop subdivision</h3>
+<p>
         Loop subdivision refines a triangle mesh by splitting edges, repositioning old and new vertices according to weighted rules, and producing four child triangles from each old triangle.
         Therefore, if you begin with \(N\) triangles, after \(k\) levels you have \(N \cdot 4^k\) triangles.
       </p>
-
-      <h3>Common mistakes</h3>
-      <ul class="bullets">
-        <li>Confusing “control point” with “point on the Bézier curve.”</li>
-        <li>Forgetting Hermite needs tangents.</li>
-        <li>Thinking subdivision preserves the exact original shape.</li>
-        <li>Trying to reason about a half-edge operation without drawing the local neighborhood first.</li>
-      </ul>
-
-      <div class="divider"></div>
-    </section>
-
-    <section id="Topic5" class="content">
-      <h2>Topic 5: Ray Tracing and Acceleration Structures</h2>
-
-      <div class="subgrid">
-        <div>
-          <h3>Core idea</h3>
-          <p>
+<h3>Common mistakes</h3>
+<ul class="bullets">
+<li>Confusing “control point” with “point on the Bézier curve.”</li>
+<li>Forgetting Hermite needs tangents.</li>
+<li>Thinking subdivision preserves the exact original shape.</li>
+<li>Trying to reason about a half-edge operation without drawing the local neighborhood first.</li>
+</ul>
+<div class="divider"></div>
+</section>
+<section class="content" id="Topic5">
+<h2>Topic 5: Ray Tracing and Acceleration Structures</h2>
+<div class="subgrid">
+<div>
+<h3>Core idea</h3><div class="note"><strong>Variables used here.</strong> A ray is <span>\(r(t)=o+td\)</span>, where <span>\(o\)</span> is origin, <span>\(d\)</span> is direction, and <span>\(t\ge 0\)</span> moves forward along the ray. For a sphere, <span>\(c\)</span> is center and <span>\(R\)</span> is radius. Valid intersections must also lie in the current interval <span>\([t_{min}, t_{max}]\)</span>.</div>
+<p>
             Ray tracing follows rays through the scene and asks what they hit. That means the whole topic reduces to:
             write the ray, write the surface equation, substitute, and solve for valid \(t\)-values.
           </p>
-
-          <div class="code"><code>
+<div class="code"><code>
 Ray:
 r(t) = o + t d
 
@@ -496,368 +592,334 @@ Sphere with center c and radius R:
 ||x - c||^2 = R^2
 
 Substitute x = o + t d
-=> quadratic in t
+=&gt; quadratic in t
           </code></div>
-        </div>
-
-        <figure class="figure">
-          <div class="figure-box">
-            <img src="images/study_ray_mc.png" alt="Ray tracing and Monte Carlo concept sketch">
-          </div>
-          <figcaption class="caption">Figure 5. Ray tracing and Monte Carlo are different topics, but both reward clean variable bookkeeping.</figcaption>
-        </figure>
-      </div>
-
-      <h3>Ray–sphere intersection</h3>
-      <p>
+</div>
+<figure class="figure">
+<div class="figure-box">
+<img alt="Ray tracing and Monte Carlo concept sketch" src="images/study_ray_mc.png"/>
+</div>
+<figcaption class="caption">Figure 5. Ray tracing and Monte Carlo are different topics, but both reward clean variable bookkeeping.</figcaption>
+</figure>
+</div>
+<h3>Ray–sphere intersection</h3><p><strong>Why the quadratic appears.</strong> The sphere equation says that the hit point must remain exactly radius <span>\(R\)</span> away from center <span>\(c\)</span>. After substituting <span>\(x=r(t)=o+td\)</span>, the squared distance <span>\(\|o+td-c\|^2\)</span> expands into a polynomial in <span>\(t\)</span> of degree 2, hence a quadratic.</p>
+<p>
         Substitute \(r(t) = o + td\) into the sphere equation \(\|x-c\|^2 = R^2\). Expanding gives a quadratic in \(t\).
         Solve the quadratic, then keep only valid roots in the permitted interval, usually something like \(t_{min} \le t \le t_{max}\).
         If there are two roots, the smaller positive valid one is the first hit.
       </p>
-
-      <h3>BVH intuition</h3>
-      <p>
+<h3>BVH intuition</h3><p><strong>Internal versus leaf nodes.</strong> A leaf node directly stores one primitive or a small primitive set. An internal node stores references to children plus a bounding box enclosing both child subtrees. Traversal tests the box first, then visits children only if the box is hit.</p>
+<p>
         A Bounding Volume Hierarchy groups primitives recursively inside bounding boxes so whole groups can be rejected quickly.
         A node’s bounding box contains the union of all geometry in its subtree. It is not “the larger of two child boxes” in some simplistic sense;
         it must enclose both children fully.
       </p>
-
-      <h3>What to recognize on an exam</h3>
-      <ul class="bullets">
-        <li>If the algebra expands into a quadratic, it is probably a ray–sphere problem.</li>
-        <li>If the question asks why acceleration helps, answer in the language of <strong>culling many primitives with one cheap box test</strong>.</li>
-        <li>If the question asks about path depth and termination, think of <strong>Russian roulette</strong> and unbiasedness.</li>
-      </ul>
-
-      <h3>Common mistakes</h3>
-      <ul class="bullets">
-        <li>Keeping negative \(t\)-values that lie behind the ray origin.</li>
-        <li>Forgetting to choose the nearest valid root.</li>
-        <li>Describing BVH boxes as if they store only one child or only the larger child.</li>
-      </ul>
-
-      <div class="divider"></div>
-    </section>
-
-    <section id="Topic6" class="content">
-      <h2>Topic 6: Radiometry, BRDFs, and Monte Carlo Integration</h2>
-
-      <h3>Radiometric quantities</h3>
-      <ul class="bullets">
-        <li><strong>Radiant flux</strong> \(\Phi\): power, measured in watts.</li>
-        <li><strong>Irradiance</strong> \(E\): incoming power per unit area, measured in \(W/m^2\).</li>
-        <li><strong>Radiance</strong> \(L\): power per unit projected area per unit solid angle. This is the core quantity in rendering equations.</li>
-        <li><strong>Illuminance</strong>: photometric analogue of irradiance, measured in lux.</li>
-        <li><strong>Solid angle</strong>: measured in steradians; a hemisphere subtends \(2\pi\), not \(4\pi\).</li>
-      </ul>
-
-      <h3>Lambertian / diffuse reflection</h3>
-      <p>
+<h3>What to recognize on an exam</h3>
+<ul class="bullets">
+<li>If the algebra expands into a quadratic, it is probably a ray–sphere problem.</li>
+<li>If the question asks why acceleration helps, answer in the language of <strong>culling many primitives with one cheap box test</strong>.</li>
+<li>If the question asks about path depth and termination, think of <strong>Russian roulette</strong> and unbiasedness.</li>
+</ul>
+<h3>Common mistakes</h3>
+<ul class="bullets">
+<li>Keeping negative \(t\)-values that lie behind the ray origin.</li>
+<li>Forgetting to choose the nearest valid root.</li>
+<li>Describing BVH boxes as if they store only one child or only the larger child.</li>
+</ul>
+<div class="divider"></div>
+</section>
+<section class="content" id="Topic6">
+<h2>Topic 6: Radiometry, BRDFs, and Monte Carlo Integration</h2>
+<h3>Radiometric quantities</h3><div class="note"><strong>Variables used here.</strong> <span>\(\Phi\)</span> is flux, <span>\(E\)</span> is irradiance, and <span>\(L\)</span> is radiance. Directions are often denoted by unit vectors such as <span>\(\omega\)</span>, <span>\(l\)</span>, and <span>\(v\)</span>. The BRDF is commonly <span>\(f_r\)</span>, and the sampling PDF is <span>\(p(x)\)</span> or <span>\(p(\omega)\)</span>.</div>
+<ul class="bullets">
+<li><strong>Radiant flux</strong> \(\Phi\): power, measured in watts.</li>
+<li><strong>Irradiance</strong> \(E\): incoming power per unit area, measured in \(W/m^2\).</li>
+<li><strong>Radiance</strong> \(L\): power per unit projected area per unit solid angle. This is the core quantity in rendering equations.</li>
+<li><strong>Illuminance</strong>: photometric analogue of irradiance, measured in lux.</li>
+<li><strong>Solid angle</strong>: measured in steradians; a hemisphere subtends \(2\pi\), not \(4\pi\).</li>
+</ul>
+<h3>Lambertian / diffuse reflection</h3><p><strong>Variable definitions for shading.</strong> Let <span>\(n\)</span> be a unit surface normal, <span>\(l\)</span> a unit incoming-light direction, and <span>\(v\)</span> a unit outgoing or eye direction. The dot product <span>\(n\cdot l\)</span> equals <span>\(\cos	heta\)</span>, where <span>\(	heta\)</span> is the angle between normal and light. The Lambertian BRDF itself is constant, while the cosine factor comes from projected area.</p>
+<p>
         A Lambertian BRDF is constant with respect to outgoing direction, which is why matte surfaces look directionally uniform.
         The familiar shading term \(l \cdot n\) comes from Lambert’s cosine law, not from the BRDF alone.
       </p>
-
-      <h3>Monte Carlo estimator structure</h3>
-      <div class="formula">
+<h3>Monte Carlo estimator structure</h3><p><strong>What each symbol means.</strong> <span>\(X_i\)</span> is the random sample drawn from density <span>\(p\)</span>. <span>\(f(X_i)\)</span> is the integrand evaluated at that sample. <span>\(N\)</span> is the number of samples. The division by <span>\(p(X_i)\)</span> corrects for the sampling distribution, and averaging over <span>\(N\)</span> samples gives the estimator.</p>
+<div class="formula">
         \[
         \int_a^b f(x)\,dx \approx \frac{1}{N}\sum_{i=1}^N \frac{f(X_i)}{p(X_i)}
         \]
       </div>
-      <p>
+<p>
         In the uniform case on \([a,b]\), \(p(x)=1/(b-a)\), so the estimator becomes the average sample value times \((b-a)\).
         That estimator is unbiased. Unbiased means its expected value equals the true integral. It does <em>not</em> mean each individual estimate is close.
       </p>
-
-      <h3>Importance sampling</h3>
-      <p>
+<h3>Importance sampling</h3>
+<p>
         If you choose a PDF \(p(x)\) that places more samples where the integrand contributes most, then variance usually decreases.
         The estimator remains unbiased as long as you divide by the same PDF you sampled from and the support is correct wherever the integrand is nonzero.
       </p>
-
-      <h3>Russian roulette</h3>
-      <p>
+<h3>Russian roulette</h3>
+<p>
         Russian roulette randomly terminates low-contribution paths to keep computation finite while preserving unbiasedness by compensating surviving paths appropriately.
         It is a variance / efficiency tradeoff device, not a biased hack to arbitrarily cut off bounces.
       </p>
-
-      <h3>Common mistakes</h3>
-      <ul class="bullets">
-        <li>Mixing up irradiance and radiance.</li>
-        <li>Saying hemisphere solid angle is \(4\pi\).</li>
-        <li>Confusing unbiasedness with low variance.</li>
-        <li>Forgetting the division by PDF in the Monte Carlo estimator.</li>
-      </ul>
-
-      <div class="divider"></div>
-    </section>
-
-    <section id="Traps" class="content">
-      <h2>Recurring Traps and How to Beat Them</h2>
-
-      <div class="twocol">
-        <div>
-          <h3>Trap: “I kind of know this topic”</h3>
-          <p>
+<h3>Common mistakes</h3>
+<ul class="bullets">
+<li>Mixing up irradiance and radiance.</li>
+<li>Saying hemisphere solid angle is \(4\pi\).</li>
+<li>Confusing unbiasedness with low variance.</li>
+<li>Forgetting the division by PDF in the Monte Carlo estimator.</li>
+</ul>
+<div class="divider"></div>
+</section>
+<section class="content" id="Traps">
+<h2>Recurring Traps and How to Beat Them</h2>
+<div class="twocol">
+<div>
+<h3>Trap: “I kind of know this topic”</h3>
+<p>
             That feeling often hides a direction mistake, a units mistake, or a condition mistake. Fix it by practicing the exact sentence you would write on the exam.
           </p>
-
-          <h3>Trap: transform order</h3>
-          <p>
+<h3>Trap: transform order</h3>
+<p>
             Always identify the pivot or reference frame. Ask: what must happen first to make the later operation happen around the right point?
           </p>
-
-          <h3>Trap: texture filtering vocabulary</h3>
-          <p>
+<h3>Trap: texture filtering vocabulary</h3>
+<p>
             Memorize the pair:
             <strong>bilinear = within one level</strong>,
             <strong>trilinear = across two levels</strong>.
           </p>
-
-          <h3>Trap: barycentric coordinates</h3>
-          <p>
+<h3>Trap: barycentric coordinates</h3>
+<p>
             Sum to one is not enough. For inside tests, you also need the sign / nonnegativity condition under the usual setup.
           </p>
-        </div>
-
-        <div>
-          <h3>Trap: unbiased versus good</h3>
-          <p>
+</div>
+<div>
+<h3>Trap: unbiased versus good</h3>
+<p>
             An unbiased estimator can still look terrible for one sample count because variance can be large. Keep expected value and variance mentally separate.
           </p>
-
-          <h3>Trap: memorizing facts without recognition</h3>
-          <p>
+<h3>Trap: memorizing facts without recognition</h3>
+<p>
             Every flashcard should answer one of these:
             what is this,
             when do I use it,
             what is the standard test,
             what is the common confusion?
           </p>
-
-          <h3>Trap: half-edge operations</h3>
-          <p>
+<h3>Trap: half-edge operations</h3>
+<p>
             Never do them purely verbally. Draw the local patch, label everything, and only then reason through the pointer updates.
           </p>
-
-          <h3>Trap: Z-buffer initialization</h3>
-          <p>
+<h3>Trap: Z-buffer initialization</h3>
+<p>
             The initial depth should represent “nothing close has been seen yet,” so initialize to the far end, not zero by habit.
           </p>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-    </section>
-
-    <section id="Checks & Answers" class="content">
-      <h2>Checks and Answers</h2>
-      <p>
+</div>
+</div>
+<div class="divider"></div>
+</section>
+<section class="content" id="Checks &amp; Answers">
+<h2>Checks and Answers</h2>
+<p>
         These prompts are followed immediately by the answer so the page can also serve as a direct reference.
       </p>
-
-      <div class="flashgrid">
-        <div class="flashcard">
-          <p><strong>1.</strong> What does Nyquist actually say, and what specific failure happens below that rate?</p>
-          <p><strong>Answer.</strong> If the highest frequency present is \(f_{max}\), then the sampling rate must exceed \(2f_{max}\) to avoid aliasing. Below that rate, high frequencies fold into incorrect lower frequencies, so the sampled signal represents the wrong pattern.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>2.</strong> Why does prefiltering reduce aliasing?</p>
-          <p><strong>Answer.</strong> Prefiltering removes or weakens frequency content that the sampling grid cannot represent. After the high frequencies are attenuated, the remaining signal is less likely to fold into false low-frequency patterns.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>3.</strong> In supersampled rasterization, why is it wrong to resolve each triangle separately into the final framebuffer?</p>
-          <p><strong>Answer.</strong> Because supersampling works by accumulating coverage and color in a higher-resolution sample buffer first, then averaging once at the end. Resolving each triangle separately throws away the interactions among overlapping primitives and breaks the intended filtering step.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>4.</strong> What conditions on barycentric coordinates indicate a point is inside a triangle?</p>
-          <p><strong>Answer.</strong> The coordinates must sum to 1 and, under the usual inside test convention, each coordinate must be nonnegative. Sum-to-one alone only says the point is an affine combination; it does not guarantee the point lies inside the triangle.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>5.</strong> Why can translation not be represented by an ordinary \(2 \times 2\) matrix in 2D Cartesian coordinates?</p>
-          <p><strong>Answer.</strong> A \(2 \times 2\) linear map always sends the origin to the origin, but a translation moves every point by a fixed offset and therefore moves the origin too. Homogeneous coordinates add one extra coordinate so translation becomes a matrix multiply in the larger space.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>6.</strong> Why does perspective projection require division?</p>
-          <p><strong>Answer.</strong> After projecting into clip coordinates, the coordinates must be divided by the homogeneous \(w\) component to produce normalized device coordinates. That division is what creates the depth-dependent shrinking seen in perspective.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>7.</strong> How do you read the order of a matrix product acting on a column vector?</p>
-          <p><strong>Answer.</strong> Read it right to left. If \(M = TRS\) and points are column vectors, then the point is scaled first, then rotated, then translated.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>8.</strong> What is the safest way to infer a transform sequence from a before/after diagram?</p>
-          <p><strong>Answer.</strong> Identify the pivot or reference frame first, then ask what operations must happen around that pivot. When an object rotates or scales about a point other than the origin, the standard pattern is translate to the pivot, apply the rotation or scale, then translate back.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>9.</strong> What does the Z-buffer store, and what should it be initialized to at a new frame?</p>
-          <p><strong>Answer.</strong> It stores the closest depth seen so far for each pixel or sample. At the start of a frame it should be initialized to the farthest possible depth, so that the first valid fragment at each location passes the depth test.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>10.</strong> What is the difference between nearest, bilinear, and trilinear filtering?</p>
-          <p><strong>Answer.</strong> Nearest chooses one texel. Bilinear interpolates among the four nearest texels within a single mip level. Trilinear performs bilinear filtering in two adjacent mip levels and then interpolates between those two results.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>11.</strong> Why do mipmaps help with minification?</p>
-          <p><strong>Answer.</strong> When one screen sample covers many texels, sampling only the base texture causes aliasing. Mipmaps provide prefiltered lower-resolution versions of the texture, so the renderer can sample a representation whose scale better matches the screen-space footprint.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>12.</strong> Why is total mipmap memory about \(\frac43\) of the base texture?</p>
-          <p><strong>Answer.</strong> Each level has about one quarter as many texels as the previous one, so the total storage is the geometric series \(1 + \frac14 + \frac1{16} + \cdots = \frac43\) times the base level.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>13.</strong> If a textured object gets smaller on screen, why does the mip level usually go up?</p>
-          <p><strong>Answer.</strong> Because each screen pixel then covers a larger footprint in texture space. A larger UV footprint means the renderer should sample a coarser mip level to match that footprint and reduce aliasing.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>14.</strong> How many intermediate lerps are computed when evaluating a cubic Bézier point by de Casteljau?</p>
-          <p><strong>Answer.</strong> Six. A cubic Bézier evaluation uses three first-level lerps, two second-level lerps, and one final lerp.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>15.</strong> Why does a Bézier curve stay inside the convex hull of its control points?</p>
-          <p><strong>Answer.</strong> de Casteljau uses repeated linear interpolation, and every linear interpolation between two points stays on the line segment joining them. Repeating that process keeps every intermediate point, and therefore the final point, inside the convex hull.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>16.</strong> What four pieces of data define a cubic Hermite segment?</p>
-          <p><strong>Answer.</strong> The two endpoint positions and the two endpoint tangent vectors.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>17.</strong> What does Catmull-Rom interpolate, and what does it spare you from specifying manually?</p>
-          <p><strong>Answer.</strong> It interpolates through the interior control points of the sequence. It spares you from manually specifying endpoint tangents, because those are derived from neighboring control points.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>18.</strong> How do you conceptually evaluate a Bézier surface?</p>
-          <p><strong>Answer.</strong> Apply de Casteljau in one parameter direction to produce intermediate points or curves, then evaluate again in the other parameter direction. It is the same repeated interpolation idea used for curves, just applied twice.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>19.</strong> Why does area-weighting make sense for smooth vertex normals?</p>
-          <p><strong>Answer.</strong> Larger adjacent faces should influence the vertex normal more strongly than tiny faces. Using area-weighted face normals gives a smoother and more geometrically representative average before normalizing.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>20.</strong> What references does a half-edge usually store?</p>
-          <p><strong>Answer.</strong> A reference to its next half-edge, its twin half-edge, its incident vertex, its parent edge, and its incident face.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>21.</strong> What is the best procedure for reasoning about edge flip or split on paper?</p>
-          <p><strong>Answer.</strong> Draw the local neighborhood, label every half-edge, vertex, edge, and face, then write the before-and-after connectivity explicitly. After that, check each stored reference one by one.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>22.</strong> After \(k\) Loop subdivision levels, how many triangles do you have starting from \(N\)?</p>
-          <p><strong>Answer.</strong> You have \(N \cdot 4^k\) triangles, because each old triangle is replaced by four child triangles at every level.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>23.</strong> Why does subdivision not exactly preserve the original shape?</p>
-          <p><strong>Answer.</strong> Subdivision changes connectivity and also repositions vertices using weighted averaging rules. Those smoothing rules move the mesh toward a smoother limit surface rather than keeping every original feature exactly fixed.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>24.</strong> What is the first algebraic move in any ray–sphere intersection problem?</p>
-          <p><strong>Answer.</strong> Write the ray as \(r(t)=o+td\), substitute it into the sphere equation \(\|x-c\|^2 = R^2\), and expand. That turns the intersection test into a quadratic equation in \(t\).</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>25.</strong> Once you solve the quadratic for a ray–sphere intersection, how do you choose the physically relevant root?</p>
-          <p><strong>Answer.</strong> Keep only roots in the allowed \(t\)-interval and choose the smallest valid positive root, because that is the first surface hit along the ray.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>26.</strong> What does a BVH node’s bounding box have to contain?</p>
-          <p><strong>Answer.</strong> It must contain all geometry in that node’s entire subtree, equivalently the union of the geometry contained by both children.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>27.</strong> Why does a BVH speed rendering up?</p>
-          <p><strong>Answer.</strong> A single cheap ray–box test can reject many primitives at once. When a ray misses a bounding box, the renderer skips every primitive inside that subtree.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>28.</strong> What are the units of irradiance?</p>
-          <p><strong>Answer.</strong> Watts per square meter, written \(W/m^2\).</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>29.</strong> What is the solid angle of a hemisphere?</p>
-          <p><strong>Answer.</strong> \(2\pi\) steradians.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>30.</strong> What does the \(l \cdot n\) term represent physically?</p>
-          <p><strong>Answer.</strong> It is the cosine factor from Lambert’s cosine law. It measures how obliquely the incoming light strikes the surface, so it accounts for the projected area seen by the light direction.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>31.</strong> What does it mean for a Monte Carlo estimator to be unbiased?</p>
-          <p><strong>Answer.</strong> Its expected value equals the true quantity being estimated. Over many repeated trials, the average estimate converges to the correct value.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>32.</strong> Why can an unbiased estimator still produce a noisy image?</p>
-          <p><strong>Answer.</strong> Because unbiasedness says nothing about variance. An estimator can be correct in expectation while individual finite-sample estimates fluctuate a lot.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>33.</strong> Why does importance sampling reduce variance when chosen well?</p>
-          <p><strong>Answer.</strong> Because it draws samples more often from regions that contribute more to the integral. That spends computation where the integrand matters most and usually reduces wasted samples.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>34.</strong> Why do you divide by the PDF in Monte Carlo integration?</p>
-          <p><strong>Answer.</strong> Because the samples were drawn according to that PDF. Dividing by the sampling probability corrects for the nonuniform sampling so the estimator targets the original integral rather than the sampling distribution itself.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>35.</strong> What does Russian roulette preserve, and what does it trade off?</p>
-          <p><strong>Answer.</strong> It preserves unbiasedness when implemented with the proper survival-probability compensation. It trades reduced average computation for increased variance.</p>
-        </div>
-        <div class="flashcard">
-          <p><strong>36.</strong> Give one sentence distinguishing radiance from irradiance.</p>
-          <p><strong>Answer.</strong> Irradiance is incoming power per unit area, while radiance is power per unit projected area per unit solid angle and is the directional quantity that appears in the rendering equation.</p>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-    </section>
-
-    <section id="Plan" class="content">
-      <h2>Practice Flow</h2>
-
-      <h3>Two-pass review</h3>
-      <div class="twocol">
-        <div>
-          <h3>Pass 1: compression</h3>
-          <ul class="bullets">
-            <li>Read the whole document once.</li>
-            <li>Mark every line that was not instant.</li>
-            <li>Create questions and answers only from weak spots.</li>
-            <li>Do one old exam section untimed just to map the terrain.</li>
-          </ul>
-        </div>
-        <div>
-          <h3>Pass 2: timed retrieval</h3>
-          <ul class="bullets">
-            <li>Drill questions and answers until answers feel immediate.</li>
-            <li>Do old exam sections timed.</li>
-            <li>After each mistake, write the missing principle in one sentence.</li>
-            <li>Revisit the topic section, then retry a similar problem.</li>
-          </ul>
-        </div>
-      </div>
-
-      <h3>Priority order</h3>
-      <ol class="numbered">
-        <li>Sampling / aliasing / supersampling</li>
-        <li>Transforms / homogeneous coordinates / pipeline / Z-buffer</li>
-        <li>Texture mapping / filtering / mipmaps</li>
-        <li>Curves / splines / Bézier / subdivision counts</li>
-        <li>Half-edge local operations and normals</li>
-        <li>Ray tracing / BVH</li>
-        <li>Radiometry / Monte Carlo / Russian roulette</li>
-      </ol>
-
-      <h3>The last 24 hours</h3>
-      <p class="note">
+<div class="flashgrid">
+<div class="flashcard">
+<p><strong>1.</strong> What does Nyquist actually say, and what specific failure happens below that rate?</p>
+<p><strong>Answer.</strong> If the highest frequency present is \(f_{max}\), then the sampling rate must exceed \(2f_{max}\) to avoid aliasing. Below that rate, high frequencies fold into incorrect lower frequencies, so the sampled signal represents the wrong pattern.</p>
+</div>
+<div class="flashcard">
+<p><strong>2.</strong> Why does prefiltering reduce aliasing?</p>
+<p><strong>Answer.</strong> Prefiltering removes or weakens frequency content that the sampling grid cannot represent. After the high frequencies are attenuated, the remaining signal is less likely to fold into false low-frequency patterns.</p>
+</div>
+<div class="flashcard">
+<p><strong>3.</strong> In supersampled rasterization, why is it wrong to resolve each triangle separately into the final framebuffer?</p>
+<p><strong>Answer.</strong> Because supersampling works by accumulating coverage and color in a higher-resolution sample buffer first, then averaging once at the end. Resolving each triangle separately throws away the interactions among overlapping primitives and breaks the intended filtering step.</p>
+</div>
+<div class="flashcard">
+<p><strong>4.</strong> What conditions on barycentric coordinates indicate a point is inside a triangle?</p>
+<p><strong>Answer.</strong> The coordinates must sum to 1 and, under the usual inside test convention, each coordinate must be nonnegative. Sum-to-one alone only says the point is an affine combination; it does not guarantee the point lies inside the triangle.</p>
+</div>
+<div class="flashcard">
+<p><strong>5.</strong> Why can translation not be represented by an ordinary \(2 \times 2\) matrix in 2D Cartesian coordinates?</p>
+<p><strong>Answer.</strong> A \(2 \times 2\) linear map always sends the origin to the origin, but a translation moves every point by a fixed offset and therefore moves the origin too. Homogeneous coordinates add one extra coordinate so translation becomes a matrix multiply in the larger space.</p>
+</div>
+<div class="flashcard">
+<p><strong>6.</strong> Why does perspective projection require division?</p>
+<p><strong>Answer.</strong> After projecting into clip coordinates, the coordinates must be divided by the homogeneous \(w\) component to produce normalized device coordinates. That division is what creates the depth-dependent shrinking seen in perspective.</p>
+</div>
+<div class="flashcard">
+<p><strong>7.</strong> How do you read the order of a matrix product acting on a column vector?</p>
+<p><strong>Answer.</strong> Read it right to left. If \(M = TRS\) and points are column vectors, then the point is scaled first, then rotated, then translated.</p>
+</div>
+<div class="flashcard">
+<p><strong>8.</strong> What is the safest way to infer a transform sequence from a before/after diagram?</p>
+<p><strong>Answer.</strong> Identify the pivot or reference frame first, then ask what operations must happen around that pivot. When an object rotates or scales about a point other than the origin, the standard pattern is translate to the pivot, apply the rotation or scale, then translate back.</p>
+</div>
+<div class="flashcard">
+<p><strong>9.</strong> What does the Z-buffer store, and what should it be initialized to at a new frame?</p>
+<p><strong>Answer.</strong> It stores the closest depth seen so far for each pixel or sample. At the start of a frame it should be initialized to the farthest possible depth, so that the first valid fragment at each location passes the depth test.</p>
+</div>
+<div class="flashcard">
+<p><strong>10.</strong> What is the difference between nearest, bilinear, and trilinear filtering?</p>
+<p><strong>Answer.</strong> Nearest chooses one texel. Bilinear interpolates among the four nearest texels within a single mip level. Trilinear performs bilinear filtering in two adjacent mip levels and then interpolates between those two results.</p>
+</div>
+<div class="flashcard">
+<p><strong>11.</strong> Why do mipmaps help with minification?</p>
+<p><strong>Answer.</strong> When one screen sample covers many texels, sampling only the base texture causes aliasing. Mipmaps provide prefiltered lower-resolution versions of the texture, so the renderer can sample a representation whose scale better matches the screen-space footprint.</p>
+</div>
+<div class="flashcard">
+<p><strong>12.</strong> Why is total mipmap memory about \(\frac43\) of the base texture?</p>
+<p><strong>Answer.</strong> Each level has about one quarter as many texels as the previous one, so the total storage is the geometric series \(1 + \frac14 + \frac1{16} + \cdots = \frac43\) times the base level.</p>
+</div>
+<div class="flashcard">
+<p><strong>13.</strong> If a textured object gets smaller on screen, why does the mip level usually go up?</p>
+<p><strong>Answer.</strong> Because each screen pixel then covers a larger footprint in texture space. A larger UV footprint means the renderer should sample a coarser mip level to match that footprint and reduce aliasing.</p>
+</div>
+<div class="flashcard">
+<p><strong>14.</strong> How many intermediate lerps are computed when evaluating a cubic Bézier point by de Casteljau?</p>
+<p><strong>Answer.</strong> Six. A cubic Bézier evaluation uses three first-level lerps, two second-level lerps, and one final lerp.</p>
+</div>
+<div class="flashcard">
+<p><strong>15.</strong> Why does a Bézier curve stay inside the convex hull of its control points?</p>
+<p><strong>Answer.</strong> de Casteljau uses repeated linear interpolation, and every linear interpolation between two points stays on the line segment joining them. Repeating that process keeps every intermediate point, and therefore the final point, inside the convex hull.</p>
+</div>
+<div class="flashcard">
+<p><strong>16.</strong> What four pieces of data define a cubic Hermite segment?</p>
+<p><strong>Answer.</strong> The two endpoint positions and the two endpoint tangent vectors.</p>
+</div>
+<div class="flashcard">
+<p><strong>17.</strong> What does Catmull-Rom interpolate, and what does it spare you from specifying manually?</p>
+<p><strong>Answer.</strong> It interpolates through the interior control points of the sequence. It spares you from manually specifying endpoint tangents, because those are derived from neighboring control points.</p>
+</div>
+<div class="flashcard">
+<p><strong>18.</strong> How do you conceptually evaluate a Bézier surface?</p>
+<p><strong>Answer.</strong> Apply de Casteljau in one parameter direction to produce intermediate points or curves, then evaluate again in the other parameter direction. It is the same repeated interpolation idea used for curves, just applied twice.</p>
+</div>
+<div class="flashcard">
+<p><strong>19.</strong> Why does area-weighting make sense for smooth vertex normals?</p>
+<p><strong>Answer.</strong> Larger adjacent faces should influence the vertex normal more strongly than tiny faces. Using area-weighted face normals gives a smoother and more geometrically representative average before normalizing.</p>
+</div>
+<div class="flashcard">
+<p><strong>20.</strong> What references does a half-edge usually store?</p>
+<p><strong>Answer.</strong> A reference to its next half-edge, its twin half-edge, its incident vertex, its parent edge, and its incident face.</p>
+</div>
+<div class="flashcard">
+<p><strong>21.</strong> What is the best procedure for reasoning about edge flip or split on paper?</p>
+<p><strong>Answer.</strong> Draw the local neighborhood, label every half-edge, vertex, edge, and face, then write the before-and-after connectivity explicitly. After that, check each stored reference one by one.</p>
+</div>
+<div class="flashcard">
+<p><strong>22.</strong> After \(k\) Loop subdivision levels, how many triangles do you have starting from \(N\)?</p>
+<p><strong>Answer.</strong> You have \(N \cdot 4^k\) triangles, because each old triangle is replaced by four child triangles at every level.</p>
+</div>
+<div class="flashcard">
+<p><strong>23.</strong> Why does subdivision not exactly preserve the original shape?</p>
+<p><strong>Answer.</strong> Subdivision changes connectivity and also repositions vertices using weighted averaging rules. Those smoothing rules move the mesh toward a smoother limit surface rather than keeping every original feature exactly fixed.</p>
+</div>
+<div class="flashcard">
+<p><strong>24.</strong> What is the first algebraic move in any ray–sphere intersection problem?</p>
+<p><strong>Answer.</strong> Write the ray as \(r(t)=o+td\), substitute it into the sphere equation \(\|x-c\|^2 = R^2\), and expand. That turns the intersection test into a quadratic equation in \(t\).</p>
+</div>
+<div class="flashcard">
+<p><strong>25.</strong> Once you solve the quadratic for a ray–sphere intersection, how do you choose the physically relevant root?</p>
+<p><strong>Answer.</strong> Keep only roots in the allowed \(t\)-interval and choose the smallest valid positive root, because that is the first surface hit along the ray.</p>
+</div>
+<div class="flashcard">
+<p><strong>26.</strong> What does a BVH node’s bounding box have to contain?</p>
+<p><strong>Answer.</strong> It must contain all geometry in that node’s entire subtree, equivalently the union of the geometry contained by both children.</p>
+</div>
+<div class="flashcard">
+<p><strong>27.</strong> Why does a BVH speed rendering up?</p>
+<p><strong>Answer.</strong> A single cheap ray–box test can reject many primitives at once. When a ray misses a bounding box, the renderer skips every primitive inside that subtree.</p>
+</div>
+<div class="flashcard">
+<p><strong>28.</strong> What are the units of irradiance?</p>
+<p><strong>Answer.</strong> Watts per square meter, written \(W/m^2\).</p>
+</div>
+<div class="flashcard">
+<p><strong>29.</strong> What is the solid angle of a hemisphere?</p>
+<p><strong>Answer.</strong> \(2\pi\) steradians.</p>
+</div>
+<div class="flashcard">
+<p><strong>30.</strong> What does the \(l \cdot n\) term represent physically?</p>
+<p><strong>Answer.</strong> It is the cosine factor from Lambert’s cosine law. It measures how obliquely the incoming light strikes the surface, so it accounts for the projected area seen by the light direction.</p>
+</div>
+<div class="flashcard">
+<p><strong>31.</strong> What does it mean for a Monte Carlo estimator to be unbiased?</p>
+<p><strong>Answer.</strong> Its expected value equals the true quantity being estimated. Over many repeated trials, the average estimate converges to the correct value.</p>
+</div>
+<div class="flashcard">
+<p><strong>32.</strong> Why can an unbiased estimator still produce a noisy image?</p>
+<p><strong>Answer.</strong> Because unbiasedness says nothing about variance. An estimator can be correct in expectation while individual finite-sample estimates fluctuate a lot.</p>
+</div>
+<div class="flashcard">
+<p><strong>33.</strong> Why does importance sampling reduce variance when chosen well?</p>
+<p><strong>Answer.</strong> Because it draws samples more often from regions that contribute more to the integral. That spends computation where the integrand matters most and usually reduces wasted samples.</p>
+</div>
+<div class="flashcard">
+<p><strong>34.</strong> Why do you divide by the PDF in Monte Carlo integration?</p>
+<p><strong>Answer.</strong> Because the samples were drawn according to that PDF. Dividing by the sampling probability corrects for the nonuniform sampling so the estimator targets the original integral rather than the sampling distribution itself.</p>
+</div>
+<div class="flashcard">
+<p><strong>35.</strong> What does Russian roulette preserve, and what does it trade off?</p>
+<p><strong>Answer.</strong> It preserves unbiasedness when implemented with the proper survival-probability compensation. It trades reduced average computation for increased variance.</p>
+</div>
+<div class="flashcard">
+<p><strong>36.</strong> Give one sentence distinguishing radiance from irradiance.</p>
+<p><strong>Answer.</strong> Irradiance is incoming power per unit area, while radiance is power per unit projected area per unit solid angle and is the directional quantity that appears in the rendering equation.</p>
+</div>
+</div>
+<div class="divider"></div>
+</section>
+<section class="content" id="Plan">
+<h2>Practice Flow</h2>
+<h3>Two-pass review</h3>
+<div class="twocol">
+<div>
+<h3>Pass 1: compression</h3>
+<ul class="bullets">
+<li>Read the whole document once.</li>
+<li>Mark every line that was not instant.</li>
+<li>Create questions and answers only from weak spots.</li>
+<li>Do one old exam section untimed just to map the terrain.</li>
+</ul>
+</div>
+<div>
+<h3>Pass 2: timed retrieval</h3>
+<ul class="bullets">
+<li>Drill questions and answers until answers feel immediate.</li>
+<li>Do old exam sections timed.</li>
+<li>After each mistake, write the missing principle in one sentence.</li>
+<li>Revisit the topic section, then retry a similar problem.</li>
+</ul>
+</div>
+</div>
+<h3>Priority order</h3>
+<ol class="numbered">
+<li>Sampling / aliasing / supersampling</li>
+<li>Transforms / homogeneous coordinates / pipeline / Z-buffer</li>
+<li>Texture mapping / filtering / mipmaps</li>
+<li>Curves / splines / Bézier / subdivision counts</li>
+<li>Half-edge local operations and normals</li>
+<li>Ray tracing / BVH</li>
+<li>Radiometry / Monte Carlo / Russian roulette</li>
+</ol>
+<h3>The last 24 hours</h3>
+<p class="note">
         Do not keep expanding notes endlessly. At that point, switch to active recall only: short conceptual checks, old true/false, short derivations, and saying answers out loud.
         The goal is speed, clarity, and confidence in the standard patterns.
       </p>
-
-      <div class="divider"></div>
-    </section>
-
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="fineprint">
+<div class="divider"></div>
+</section>
+</main>
+<footer class="footer">
+<div class="footer-inner">
+<div class="fineprint">
         CS 184 graphics theory reference • built from lecture material, review material, HW1/HW2, and Spring 2020–2025 exams
       </div>
-    </div>
-  </footer>
+</div>
+</footer>
 </body>
 </html>
