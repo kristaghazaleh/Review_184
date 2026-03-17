@@ -25,8 +25,11 @@
 <div class="hero-inner">
 <div class="course-line">CS 184 / Foundations of Computer Graphics</div>
 <h1 class="title">Graphics Theory Reference</h1>
-<div class="byline">by Ellie Ghazaleh</div>
+<div class="byline">sampling, geometry, pipeline, shading, light, and stochastic rendering</div>
 <div class="meta">
+<div><span class="meta-label">Coverage:</span> sampling, antialiasing, transforms, texture mapping, shading, curves, meshes, ray tracing, radiometry, and Monte Carlo integration</div>
+<div><span class="meta-label">Built from:</span> lecture slides, review material, HW1, HW2, and Spring 2020-2025 course questions</div>
+<div><span class="meta-label">Use:</span> dense course reference for homework, conceptual questions, and derivations</div>
 </div>
 </div>
 </header>
@@ -40,6 +43,7 @@
 <a href="#Textures">Texture Mapping &amp; Filtering</a>
 <a href="#Geometry">Curves, Splines, Meshes &amp; Subdivision</a>
 <a href="#RayTracing">Ray Tracing &amp; Acceleration</a>
+<a href="#Shading">Diffuse, Gouraud &amp; Phong Shading</a>
 <a href="#Light">Radiometry, BRDFs &amp; Monte Carlo</a>
 <a href="#Checks">Direct Questions &amp; Answers</a>
 </div>
@@ -49,7 +53,7 @@
 <section class="content" id="Overview">
 <h2>Overview</h2>
 <p>
-This page is meant to behave like a dense subject reference, not a quick summary. The goal is to keep the vocabulary, symbols,
+The goal is to keep the vocabulary, symbols,
 pipeline steps, geometric constructions, and stochastic estimators all in one place so that when a homework or exam problem says
 "explain why," "derive the expression," or "choose the correct method," the underlying math is already spelled out.
 </p>
@@ -75,6 +79,8 @@ the real underlying object is named correctly.
 </div>
 <figcaption class="caption">Figure 1. A large portion of the course is about mapping one domain into another and controlling the information lost in the process.</figcaption>
 </figure>
+<div class="flashcard"><p><strong>What is the difference between Gouraud shading and Phong shading?</strong></p><p><strong>Answer.</strong> Gouraud shading computes lighting at the vertices and interpolates the resulting colors. Phong shading interpolates the normals and computes lighting per pixel or sample.</p></div>
+<div class="flashcard"><p><strong>What does the diffuse term represent?</strong></p><p><strong>Answer.</strong> The matte Lambertian component of reflection, usually proportional to \(\max(0,n\cdot l)\). It depends on how directly the light hits the surface, not on the viewing direction for an ideal diffuse material.</p></div>
 </div>
 <div class="divider"></div>
 </section>
@@ -794,6 +800,100 @@ t in [tmin, tmax], and among valid roots choose nearest one
 <figcaption class="caption">Figure 5. Ray problems become much more manageable when every variable in the intersection equation is named before expanding.</figcaption>
 </figure>
 </div>
+<div class="divider"></div>
+</section>
+
+<section class="content" id="Shading">
+<h2>Diffuse, Gouraud, and Phong Shading</h2>
+<div class="note"><strong>Variables used here.</strong> \(n\) = surface normal, \(l\) = light direction, \(v\) = view direction, \(r\) = perfect reflection direction, \(k_a,k_d,k_s\) = ambient, diffuse, and specular coefficients, and \(p\) = Phong shininess exponent.</div>
+
+<h3>Where shading fits in the pipeline</h3>
+<p>
+Rasterization decides which samples or pixels are covered by a primitive. Shading decides what color or radiance value to assign once that sample belongs to the surface.
+This is why visibility and shading should be mentally separated: the Z-buffer resolves which surface is visible, while the shading model determines how that visible surface responds to light.
+</p>
+
+<h3>Diffuse shading</h3>
+<p>
+Diffuse shading models matte reflection. The basic idea is that a rough surface looks equally bright from different viewing directions, but it still receives more energy when the light hits the surface more directly.
+That gives the Lambert cosine term
+</p>
+<div class="formula">
+\[
+I_{	ext{diffuse}} = k_d \, I_L \, \max(0, n\cdot l).
+\]
+</div>
+<p>
+The \(n\cdot l\) factor is the cosine of the angle between the unit normal and the unit light direction. If the angle is larger than \(90^\circ\), then the light is behind the surface and the diffuse contribution is clamped to zero.
+In many course problems, “diffuse shading” and “Lambertian shading” are used almost interchangeably.
+</p>
+
+<h3>Flat, Gouraud, and Phong shading</h3>
+<p>
+These names describe <em>where</em> lighting is evaluated and <em>what</em> gets interpolated across the triangle. That distinction matters a lot.
+</p>
+<div class="twocol">
+<div>
+<ul class="bullets">
+<li><strong>Flat shading</strong>: compute one normal and one lighting result for the whole face. The triangle appears faceted.</li>
+<li><strong>Gouraud shading</strong>: compute lighting at the vertices, then linearly interpolate the resulting colors across the triangle.</li>
+<li><strong>Phong shading</strong>: linearly interpolate the normals across the triangle, renormalize them, then compute lighting per pixel or per sample.</li>
+</ul>
+</div>
+<div>
+<ul class="bullets">
+<li><strong>What Gouraud interpolates</strong>: colors or intensities.</li>
+<li><strong>What Phong interpolates</strong>: normals.</li>
+<li><strong>Why Phong usually looks better</strong>: specular highlights can appear inside the triangle even when no vertex lies on the highlight.</li>
+</ul>
+</div>
+</div>
+
+<h3>Gouraud shading details</h3>
+<p>
+In Gouraud shading, each vertex gets its own lighting computation using the vertex normal and the active lights. After that, barycentric interpolation blends those three vertex colors across the interior of the triangle.
+This is cheap and smooths out the faceted appearance of flat shading, but it can miss narrow specular highlights because the highlight may not be captured at any vertex.
+</p>
+
+<h3>Phong shading details</h3>
+<p>
+In Phong shading, the vertex normals are interpolated across the triangle using barycentric coordinates. The interpolated normal is then normalized and used in the lighting equation at each pixel or sample.
+This generally produces better highlights and a smoother appearance than Gouraud shading because the lighting itself is evaluated more locally.
+The cost is higher because lighting must be recomputed for many more points.
+</p>
+
+<h3>Phong reflection model</h3>
+<p>
+Phong shading is often paired with the Phong reflection model, which splits reflected light into ambient, diffuse, and specular terms. A common form is
+</p>
+<div class="formula">
+\[
+I = k_a I_a + k_d I_L \max(0, n\cdot l) + k_s I_L \max(0, r\cdot v)^p.
+\]
+</div>
+<p>
+Here the specular term is strongest when the view direction \(v\) aligns with the perfect reflection direction \(r\). The exponent \(p\) controls shininess: larger \(p\) produces a smaller, tighter highlight, while smaller \(p\) produces a broader highlight.
+</p>
+
+<h3>Blinn-Phong variant</h3>
+<p>
+Many courses also mention the Blinn-Phong form, which replaces \(r\cdot v\) with \(n\cdot h\), where \(h\) is the half-vector between the light direction and the view direction.
+The same qualitative idea remains: diffuse response depends on \(n\cdot l\), and specular response becomes strongest when the viewing configuration aligns with the highlight direction.
+</p>
+<div class="formula">
+\[
+I_{	ext{specular, Blinn-Phong}} = k_s I_L \max(0, n\cdot h)^p.
+\]
+</div>
+
+<h3>Common confusions</h3>
+<ul class="bullets">
+<li><strong>Phong shading</strong> and the <strong>Phong reflection model</strong> are related but not identical. One is an interpolation strategy; the other is a lighting model.</li>
+<li>Diffuse shading does not depend on the viewer direction for an ideal Lambertian surface.</li>
+<li>Gouraud shading can hide or completely miss a specular highlight if the highlight lies between vertices.</li>
+<li>Phong shading usually requires renormalizing the interpolated normal before using it in dot products.</li>
+<li>The Z-buffer answers which surface is visible; it does not by itself decide the shading model.</li>
+</ul>
 <div class="divider"></div>
 </section>
 
